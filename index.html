@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chương 3 Python - Hướng dẫn chi tiết và thực hành</title>
+<style>
+:root{--p:#0d63ce;--p2:#1d7be3;--bg:#f4f7fb;--txt:#172033;--border:#dbe5f2;--code:#101827;--ok:#15803d;--warn:#c65a11;--violet:#6d28d9}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--txt);line-height:1.68}
+header{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:7px 18px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+header h1{margin:0;font-size:18px;line-height:1.2}header p{margin:2px 0 0;font-size:11px}
+.wrap{max-width:1450px;margin:18px auto;padding:0 14px 40px;display:grid;grid-template-columns:300px 1fr;gap:20px}
+nav{position:sticky;top:64px;align-self:start;background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px;max-height:calc(100vh - 84px);overflow:auto}
+nav a{display:block;text-decoration:none;color:var(--txt);padding:8px 9px;border-radius:8px;font-size:14px}nav a:hover{background:#eef5ff;color:var(--p)}
+section{background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 6px 18px rgba(15,23,42,.04)}
+h2{color:var(--p);margin-top:0}h3{color:#23466f}h5{font-size:15px;margin:12px 0 7px}
+pre{background:var(--code);color:#eef6ff;padding:14px;border-radius:12px;overflow:auto;white-space:pre-wrap}code{font-family:Consolas,monospace}
+table{width:100%;border-collapse:collapse;margin:12px 0}th,td{border:1px solid var(--border);padding:9px;text-align:left;vertical-align:top}th{background:#eef5ff}
+.theory,.note,.warn,.hint,.requirement,.guide,.demoio{padding:13px 15px;border-radius:11px;margin:12px 0}
+.theory{background:#f8fafc;border-left:5px solid #475569}.note{background:#eef5ff;border-left:5px solid var(--p)}.warn{background:#fff5eb;border-left:5px solid var(--warn)}
+.hint,.guide{background:#f5f3ff;border-left:5px solid var(--violet)}.requirement{background:#f8fafc;border:1px solid var(--border)}
+.demo{border:2px solid #9fc3ef;background:#f8fbff;border-radius:15px;padding:16px;margin:16px 0}
+.exercise{background:#fbfdff;border:1px solid #bfd0e7;border-radius:15px;padding:16px;margin:15px 0}.exercise h4{margin:0 0 8px;color:#194b8d}
+.file{display:inline-block;background:#13233c;color:#fff;padding:4px 8px;border-radius:7px;font-family:Consolas,monospace}
+.answer{display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+.btn{border:0;background:var(--p);color:white;padding:9px 12px;border-radius:8px;font-weight:bold;cursor:pointer}
+.io-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.io-grid pre{margin:6px 0 0;min-height:72px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar button{border:0;padding:9px 12px;border-radius:8px;font-weight:bold;cursor:pointer}.toolbar .secondary{background:#eaf3ff;color:var(--p)}
+.small{font-size:13px;color:#64748b}
+@media(max-width:980px){.wrap{grid-template-columns:1fr}nav{position:static;max-height:none}.io-grid{grid-template-columns:1fr}}
+@media print{header,nav,button,.toolbar{display:none!important}.wrap{display:block;margin:0;padding:0}.answer{display:block!important}section{box-shadow:none}}
+</style>
+</head>
+<body>
+<header><h1>PYTHON CƠ BẢN · CHƯƠNG 3</h1><p>Lý thuyết · Demo chú thích · Gợi ý cách giải · Thực hành</p></header>
+<div class="wrap">
+<nav><h3 style="margin-top:0;color:#0d63ce">MỤC LỤC</h3><a href="#intro">Tổng quan & cách học</a><a href="#s1">1. If / elif / else</a><a href="#s2">2. For & range()</a><a href="#s3">3. While</a><a href="#s4">4. Lặp qua dữ liệu</a><a href="#s5">5. break / continue / else</a><a href="#s6">6. Comprehension</a><a href="#s7">7. Generator</a><a href="#s8">8. Bài tổng hợp</a></nav>
+<main>
+
+<section id="intro">
+<h2>CHƯƠNG 3 – CẤU TRÚC ĐIỀU KHIỂN</h2>
+<p><b>Thời gian:</b> 8 giờ. Bản này được thiết kế để giảng trực tiếp cho sinh viên mới học.</p>
+<div class="note"><b>Quy trình học mỗi bài:</b> 1) đọc lý thuyết → 2) xem demo có chú thích → 3) đọc yêu cầu bài tập → 4) làm theo gợi ý từng bước → 5) chạy thử với dữ liệu mẫu → 6) chỉ sau đó mới mở lời giải tham khảo.</div>
+<div class="toolbar">
+<button onclick="showAll()">Hiện tất cả lời giải</button>
+<button class="secondary" onclick="hideAll()">Ẩn tất cả lời giải</button>
+<button class="secondary" onclick="window.print()">In bài giảng</button>
+</div>
+<h3>Mục tiêu</h3>
+<ul>
+<li>Viết được if/elif/else và điều kiện ghép.</li>
+<li>Biết chọn for hay while phù hợp.</li>
+<li>Dùng được range(), biến cộng dồn, biến đếm.</li>
+<li>Lặp qua chuỗi, list, dict, set.</li>
+<li>Dùng break, continue, else đúng tình huống.</li>
+<li>Biết list/dict/set comprehension và generator expression cơ bản.</li>
+</ul>
+</section>
+
+<section id="s1">
+<h2>1. IF / ELIF / ELSE – RA QUYẾT ĐỊNH</h2>
+<div class="theory">
+<h3>1.1. Bản chất</h3>
+<p><code>if</code> dùng khi chương trình cần lựa chọn hành động dựa trên một điều kiện đúng hoặc sai. Có thể hiểu như câu nói đời thường: <b>Nếu trời mưa thì mang áo mưa, ngược lại thì không cần.</b></p>
+<h3>1.2. Khi nào nên dùng?</h3>
+<ul>
+<li>Kiểm tra điểm đạt/chưa đạt.</li>
+<li>Kiểm tra số chẵn/lẻ, dương/âm.</li>
+<li>Kiểm tra tuổi, mật khẩu, điều kiện đăng nhập.</li>
+<li>Xếp loại theo nhiều mức.</li>
+</ul>
+<h3>1.3. Chọn cấu trúc nào?</h3>
+<table>
+<tr><th>Tình huống</th><th>Cấu trúc</th></tr>
+<tr><td>Chỉ cần làm gì đó khi điều kiện đúng</td><td><code>if</code></td></tr>
+<tr><td>Có đúng 2 hướng xử lý</td><td><code>if ... else</code></td></tr>
+<tr><td>Có từ 3 trường hợp trở lên</td><td><code>if ... elif ... else</code></td></tr>
+</table>
+<h3>1.4. Điều quan trọng nhất: điều kiện phải trả về True/False</h3>
+<pre><code>age = 18
+print(age &gt;= 18)        # True
+print(age &lt; 18)         # False
+print(age == 18)        # True
+print(age != 20)        # True</code></pre>
+<div class="warn"><b>Lỗi thường gặp:</b> dùng <code>=</code> thay cho <code>==</code>; quên dấu <code>:</code>; thụt lề sai; đặt điều kiện sai thứ tự.</div>
+
+    <div class="demo">
+      <h4>Demo 1 – Xếp loại học lực</h4>
+      <p><b>Tên file:</b> <span class="file">demo_if_xep_loai.py</span></p>
+      <p><b>Mục đích demo:</b> Minh họa if/elif/else, kiểm tra dữ liệu đầu vào và thứ tự điều kiện.</p>
+      <h5>Code hoàn chỉnh có chú thích</h5>
+      <pre><code># demo_if_xep_loai.py
+
+# Bước 1: nhập điểm từ bàn phím
+score = float(input(&quot;Nhập điểm từ 0 đến 10: &quot;))
+
+# Bước 2: kiểm tra dữ liệu có nằm trong khoảng hợp lệ hay không
+if score &lt; 0 or score &gt; 10:
+    print(&quot;Điểm không hợp lệ.&quot;)
+
+# Bước 3: nếu hợp lệ, xét từ mức cao xuống thấp
+elif score &gt;= 8:
+    print(&quot;Xếp loại: Giỏi&quot;)
+
+elif score &gt;= 6.5:
+    print(&quot;Xếp loại: Khá&quot;)
+
+elif score &gt;= 5:
+    print(&quot;Xếp loại: Trung bình&quot;)
+
+# Bước 4: nếu không thuộc các trường hợp trên
+else:
+    print(&quot;Xếp loại: Chưa đạt&quot;)</code></pre>
+      <h5>Giải thích từng phần</h5>
+      <table><tr><th>Dòng/ý chính</th><th>Giải thích</th></tr><tr><td><code>score = float(input(...))</code></td><td>Nhập điểm và đổi sang số thực để có thể so sánh.</td></tr><tr><td><code>score &lt; 0 or score &gt; 10</code></td><td>Kiểm tra dữ liệu không hợp lệ trước khi xếp loại.</td></tr><tr><td><code>elif score &gt;= 8</code></td><td>Điều kiện cao nhất phải đặt trước.</td></tr><tr><td><code>else</code></td><td>Bắt tất cả trường hợp còn lại.</td></tr></table>
+      <div class="io-grid">
+        <div><b>Dữ liệu nhập mẫu</b><pre>7.2</pre></div>
+        <div><b>Kết quả chạy mẫu</b><pre>Xếp loại: Khá</pre></div>
+      </div>
+    </div>
+    <h3>Bài tập – hãy đọc gợi ý trước, chưa xem lời giải</h3>
+    <div class="exercise">
+      <h4>Bài 1. Số dương, âm hay bằng 0</h4>
+      <p><b>Tên file:</b> <span class="file">if_bt01_dau_so.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Nhập một số và cho biết số đó dương, âm hay bằng 0.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Xác định có 3 trường hợp cần xử lý.</li><li>Viết điều kiện số &gt; 0.</li><li>Viết nhánh thứ hai cho số &lt; 0.</li><li>Dùng else cho trường hợp còn lại.</li><li>Chạy thử với 5, -3 và 0.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>Nhập một số: -3</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Số âm</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># if_bt01_dau_so.py
+number = float(input(&quot;Nhập một số: &quot;))
+
+if number &gt; 0:
+    print(&quot;Số dương&quot;)
+elif number &lt; 0:
+    print(&quot;Số âm&quot;)
+else:
+    print(&quot;Bằng 0&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 2. Kiểm tra chẵn lẻ</h4>
+      <p><b>Tên file:</b> <span class="file">if_bt02_chan_le.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Nhập một số nguyên và cho biết số đó chẵn hay lẻ.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Nhớ lại toán tử chia dư %.</li><li>Một số chẵn có số dư khi chia 2 bằng 0.</li><li>Dùng if cho trường hợp chẵn.</li><li>Dùng else cho trường hợp lẻ.</li><li>Chạy thử với 10 và 7.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>Nhập số nguyên: 7</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Số lẻ</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># if_bt02_chan_le.py
+number = int(input(&quot;Nhập số nguyên: &quot;))
+
+if number % 2 == 0:
+    print(&quot;Số chẵn&quot;)
+else:
+    print(&quot;Số lẻ&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 3. So sánh hai số</h4>
+      <p><b>Tên file:</b> <span class="file">if_bt03_so_sanh.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Nhập a và b. Cho biết a lớn hơn b, nhỏ hơn b hay bằng b.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Bài có 3 trường hợp.</li><li>So sánh a &gt; b.</li><li>Nếu sai, kiểm tra a &lt; b.</li><li>Nếu cả hai sai thì a bằng b.</li><li>Thử với a=5,b=3; a=2,b=8; a=4,b=4.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>Nhập a: 4
+Nhập b: 4</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>a bằng b</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># if_bt03_so_sanh.py
+a = float(input(&quot;Nhập a: &quot;))
+b = float(input(&quot;Nhập b: &quot;))
+
+if a &gt; b:
+    print(&quot;a lớn hơn b&quot;)
+elif a &lt; b:
+    print(&quot;a nhỏ hơn b&quot;)
+else:
+    print(&quot;a bằng b&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 4. Xếp loại học lực</h4>
+      <p><b>Tên file:</b> <span class="file">if_bt04_xep_loai.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Điểm 0–10: từ 8 Giỏi; từ 6.5 Khá; từ 5 Trung bình; dưới 5 Chưa đạt.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Kiểm tra điểm ngoài 0–10 trước.</li><li>Sau đó xét mức cao nhất trước.</li><li>Dùng elif cho các mức tiếp theo.</li><li>Dùng else cho dưới 5.</li><li>Thử các điểm 9, 7, 5.5, 3, 11.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>Nhập điểm: 8.5</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Giỏi</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># if_bt04_xep_loai.py
+score = float(input(&quot;Nhập điểm: &quot;))
+
+if score &lt; 0 or score &gt; 10:
+    print(&quot;Điểm không hợp lệ&quot;)
+elif score &gt;= 8:
+    print(&quot;Giỏi&quot;)
+elif score &gt;= 6.5:
+    print(&quot;Khá&quot;)
+elif score &gt;= 5:
+    print(&quot;Trung bình&quot;)
+else:
+    print(&quot;Chưa đạt&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 5. Máy tính mini</h4>
+      <p><b>Tên file:</b> <span class="file">if_bt05_may_tinh.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Nhập hai số và một phép toán +, -, *, /. Thực hiện phép tính tương ứng.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Nhập a và b bằng float.</li><li>Nhập toán tử dưới dạng chuỗi.</li><li>Dùng if/elif để so sánh toán tử.</li><li>Riêng phép chia phải kiểm tra b có bằng 0 không.</li><li>Nếu ký hiệu khác 4 phép toán trên thì báo không hợp lệ.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>Nhập a: 10
+Nhập b: 2
+Phép toán: /</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Kết quả: 5.0</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># if_bt05_may_tinh.py
+a = float(input(&quot;Nhập a: &quot;))
+b = float(input(&quot;Nhập b: &quot;))
+operator = input(&quot;Phép toán (+, -, *, /): &quot;)
+
+if operator == &quot;+&quot;:
+    print(&quot;Kết quả:&quot;, a + b)
+elif operator == &quot;-&quot;:
+    print(&quot;Kết quả:&quot;, a - b)
+elif operator == &quot;*&quot;:
+    print(&quot;Kết quả:&quot;, a * b)
+elif operator == &quot;/&quot;:
+    if b == 0:
+        print(&quot;Không thể chia cho 0&quot;)
+    else:
+        print(&quot;Kết quả:&quot;, a / b)
+else:
+    print(&quot;Phép toán không hợp lệ&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    </section><section id="s2">
+<h2>2. VÒNG LẶP FOR VÀ RANGE()</h2>
+<div class="theory">
+<h3>2.1. Khi nào dùng for?</h3>
+<p>Dùng <code>for</code> khi biết trước số lần lặp hoặc có một tập dữ liệu cần xử lý từng phần tử.</p>
+<ul>
+<li>In từ 1 đến 100.</li><li>Tính tổng 1 đến n.</li><li>Duyệt danh sách điểm.</li><li>In bảng cửu chương.</li>
+</ul>
+<h3>2.2. Cú pháp</h3>
+<pre><code>for biến_lặp in dữ_liệu:
+    khối_lệnh</code></pre>
+<h3>2.3. range()</h3>
+<table>
+<tr><th>Cú pháp</th><th>Ý nghĩa</th></tr>
+<tr><td><code>range(5)</code></td><td>0, 1, 2, 3, 4</td></tr>
+<tr><td><code>range(1, 6)</code></td><td>1, 2, 3, 4, 5</td></tr>
+<tr><td><code>range(2, 11, 2)</code></td><td>2, 4, 6, 8, 10</td></tr>
+<tr><td><code>range(10, 0, -1)</code></td><td>10 xuống 1</td></tr>
+</table>
+<div class="note"><b>Dễ nhớ:</b> range không lấy giá trị stop.</div>
+</div>
+
+    <div class="demo">
+      <h4>Demo 2 – Tính tổng từ 1 đến n</h4>
+      <p><b>Tên file:</b> <span class="file">demo_for_tong_1_n.py</span></p>
+      <p><b>Mục đích demo:</b> Minh họa biến cộng dồn trong vòng lặp for.</p>
+      <h5>Code hoàn chỉnh có chú thích</h5>
+      <pre><code># demo_for_tong_1_n.py
+
+# Nhập giới hạn trên
+n = int(input(&quot;Nhập n: &quot;))
+
+# Biến total dùng để cộng dồn, ban đầu bằng 0
+total = 0
+
+# range(1, n + 1) tạo dãy 1, 2, ..., n
+for i in range(1, n + 1):
+    # Mỗi vòng lặp cộng i vào total
+    total = total + i
+
+# Sau khi vòng lặp kết thúc mới in kết quả
+print(&quot;Tổng từ 1 đến&quot;, n, &quot;=&quot;, total)</code></pre>
+      <h5>Giải thích từng phần</h5>
+      <table><tr><th>Dòng/ý chính</th><th>Giải thích</th></tr><tr><td><code>total = 0</code></td><td>Biến tích lũy phải có giá trị ban đầu.</td></tr><tr><td><code>range(1, n + 1)</code></td><td>Dùng n+1 vì range không lấy điểm cuối.</td></tr><tr><td><code>total = total + i</code></td><td>Cộng dồn giá trị mỗi vòng.</td></tr><tr><td><code>print(...) ngoài for</code></td><td>Chỉ in kết quả cuối cùng sau khi đã cộng xong.</td></tr></table>
+      <div class="io-grid">
+        <div><b>Dữ liệu nhập mẫu</b><pre>Nhập n: 5</pre></div>
+        <div><b>Kết quả chạy mẫu</b><pre>Tổng từ 1 đến 5 = 15</pre></div>
+      </div>
+    </div>
+    <h3>Bài tập thực hành có hướng dẫn</h3>
+    <div class="exercise">
+      <h4>Bài 1. In số từ 1 đến 100</h4>
+      <p><b>Tên file:</b> <span class="file">for_bt01_in_1_100.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Dùng for và range() để in các số từ 1 đến 100.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Xác định start = 1.</li><li>Vì cần in đến 100 nên stop phải là 101.</li><li>Mỗi vòng in biến lặp.</li><li>Không cần biến cộng dồn.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>1
+2
+...
+100</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># for_bt01_in_1_100.py
+for i in range(1, 101):
+    print(i)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 2. In số chẵn từ 1 đến 100</h4>
+      <p><b>Tên file:</b> <span class="file">for_bt02_so_chan.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Chỉ in số chẵn trong khoảng 1–100.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Có 2 cách: dùng range bước 2 hoặc lặp tất cả rồi if.</li><li>Cách đơn giản hơn: range(2, 101, 2).</li><li>Kiểm tra thử số đầu, cuối và bước nhảy.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>2
+4
+6
+...
+100</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># for_bt02_so_chan.py
+for i in range(2, 101, 2):
+    print(i)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 3. Tính tổng 1 đến n</h4>
+      <p><b>Tên file:</b> <span class="file">for_bt03_tong_1_n.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Nhập n và tính tổng S = 1 + 2 + ... + n.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Nhập n.</li><li>Tạo total = 0.</li><li>Lặp i từ 1 đến n.</li><li>Mỗi lần cộng i vào total.</li><li>In total sau vòng lặp.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>Nhập n: 4</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Tổng = 10</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># for_bt03_tong_1_n.py
+n = int(input(&quot;Nhập n: &quot;))
+total = 0
+
+for i in range(1, n + 1):
+    total += i
+
+print(&quot;Tổng =&quot;, total)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 4. Tính giai thừa</h4>
+      <p><b>Tên file:</b> <span class="file">for_bt04_giai_thua.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Nhập n và tính n! = 1 × 2 × ... × n.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Khác tổng, bài này là tích nên biến ban đầu phải là 1.</li><li>Lặp từ 1 đến n.</li><li>Mỗi vòng nhân tích hiện tại với i.</li><li>In kết quả sau vòng lặp.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>Nhập n: 5</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>5! = 120</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># for_bt04_giai_thua.py
+n = int(input(&quot;Nhập n: &quot;))
+factorial = 1
+
+for i in range(1, n + 1):
+    factorial *= i
+
+print(f&quot;{n}! = {factorial}&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 5. Vẽ tam giác sao</h4>
+      <p><b>Tên file:</b> <span class="file">for_bt05_tam_giac_sao.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Nhập số dòng n. Dòng 1 có 1 dấu *, dòng 2 có 2 dấu *, ...</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Quan sát quy luật: dòng i có i dấu *.</li><li>Lặp i từ 1 đến n.</li><li>Trong Python có thể nhân chuỗi: &#x27;*&#x27; * i.</li><li>Mỗi vòng print một dòng.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>Nhập số dòng: 4</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>*
+**
+***
+****</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># for_bt05_tam_giac_sao.py
+n = int(input(&quot;Nhập số dòng: &quot;))
+
+for i in range(1, n + 1):
+    print(&quot;*&quot; * i)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    </section><section id="s3">
+<h2>3. VÒNG LẶP WHILE</h2>
+<div class="theory">
+<h3>3.1. Khi nào nên dùng?</h3>
+<p>Dùng <code>while</code> khi chưa biết trước phải lặp bao nhiêu lần nhưng biết điều kiện dừng.</p>
+<ul><li>Nhập lại đến khi hợp lệ.</li><li>Đăng nhập đến khi đúng.</li><li>Menu chạy đến khi chọn thoát.</li></ul>
+<h3>3.2. Ba thứ phải có</h3>
+<ol><li>Giá trị ban đầu.</li><li>Điều kiện lặp.</li><li>Cập nhật để tiến gần điều kiện dừng.</li></ol>
+<pre><code>i = 1
+while i &lt;= 5:
+    print(i)
+    i += 1</code></pre>
+<div class="warn"><b>Vòng lặp vô hạn:</b> nếu điều kiện luôn True mà không có cập nhật hoặc break, chương trình sẽ không tự dừng.</div>
+</div>
+
+    <div class="demo">
+      <h4>Demo 3 – Nhập số dương đến khi đúng</h4>
+      <p><b>Tên file:</b> <span class="file">demo_while_so_duong.py</span></p>
+      <p><b>Mục đích demo:</b> Minh họa while trong bài toán không biết trước số lần nhập.</p>
+      <h5>Code hoàn chỉnh có chú thích</h5>
+      <pre><code># demo_while_so_duong.py
+
+# Nhập lần đầu
+number = float(input(&quot;Nhập một số dương: &quot;))
+
+# Nếu chưa đúng thì tiếp tục yêu cầu nhập lại
+while number &lt;= 0:
+    print(&quot;Số vừa nhập chưa hợp lệ.&quot;)
+    number = float(input(&quot;Nhập lại số dương: &quot;))
+
+# Chỉ đến đây khi điều kiện while đã False
+print(&quot;Bạn đã nhập đúng:&quot;, number)</code></pre>
+      <h5>Giải thích từng phần</h5>
+      <table><tr><th>Dòng/ý chính</th><th>Giải thích</th></tr><tr><td><code>number = float(input(...))</code></td><td>Phải có giá trị trước khi kiểm tra điều kiện while.</td></tr><tr><td><code>while number &lt;= 0</code></td><td>Tiếp tục lặp trong khi số chưa hợp lệ.</td></tr><tr><td><code>number = float(input(...)) bên trong while</code></td><td>Cập nhật dữ liệu để vòng lặp có thể kết thúc.</td></tr><tr><td><code>print(...) sau while</code></td><td>Chạy khi đã thoát khỏi vòng lặp.</td></tr></table>
+      <div class="io-grid">
+        <div><b>Dữ liệu nhập mẫu</b><pre>-2
+0
+5</pre></div>
+        <div><b>Kết quả chạy mẫu</b><pre>Số vừa nhập chưa hợp lệ.
+Số vừa nhập chưa hợp lệ.
+Bạn đã nhập đúng: 5.0</pre></div>
+      </div>
+    </div>
+    <h3>Bài tập thực hành có hướng dẫn</h3>
+    <div class="exercise">
+      <h4>Bài 1. In 1 đến 10 bằng while</h4>
+      <p><b>Tên file:</b> <span class="file">while_bt01_1_10.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Không dùng for. In từ 1 đến 10.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Tạo i = 1.</li><li>Lặp khi i &lt;= 10.</li><li>In i.</li><li>Tăng i lên 1 sau mỗi vòng.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>1
+2
+...
+10</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># while_bt01_1_10.py
+i = 1
+
+while i &lt;= 10:
+    print(i)
+    i += 1</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 2. Nhập số trong khoảng 1–10</h4>
+      <p><b>Tên file:</b> <span class="file">while_bt02_nhap_1_10.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Yêu cầu người dùng nhập lại cho đến khi số nằm trong [1,10].</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Nhập lần đầu.</li><li>Điều kiện sai là number &lt; 1 hoặc number &gt; 10.</li><li>Trong while phải nhập lại.</li><li>Sau while in xác nhận.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>15
+-2
+7</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Không hợp lệ.
+Không hợp lệ.
+Đã nhận: 7</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># while_bt02_nhap_1_10.py
+number = int(input(&quot;Nhập số từ 1 đến 10: &quot;))
+
+while number &lt; 1 or number &gt; 10:
+    print(&quot;Không hợp lệ.&quot;)
+    number = int(input(&quot;Nhập lại: &quot;))
+
+print(&quot;Đã nhận:&quot;, number)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 3. Tính tổng các số nhập đến khi gặp 0</h4>
+      <p><b>Tên file:</b> <span class="file">while_bt03_tong_den_0.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Người dùng nhập nhiều số. Khi nhập 0 thì dừng và in tổng trước đó.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Tạo total = 0.</li><li>Dùng while True vì chưa biết số lần.</li><li>Mỗi vòng nhập number.</li><li>Nếu number == 0 thì break.</li><li>Nếu chưa phải 0 thì cộng vào total.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>5
+3
+-2
+0</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Tổng = 6.0</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># while_bt03_tong_den_0.py
+total = 0
+
+while True:
+    number = float(input(&quot;Nhập số (0 để dừng): &quot;))
+
+    if number == 0:
+        break
+
+    total += number
+
+print(&quot;Tổng =&quot;, total)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 4. Mật khẩu tối đa 3 lần</h4>
+      <p><b>Tên file:</b> <span class="file">while_bt04_mat_khau.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Cho mật khẩu đúng là 123456. Người dùng chỉ được thử tối đa 3 lần.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Cần biến đếm số lần thử.</li><li>Điều kiện while: chưa đủ 3 lần.</li><li>Mỗi lần nhập tăng biến đếm.</li><li>Nếu đúng thì báo thành công và break.</li><li>Sau vòng lặp nếu chưa đúng thì báo thất bại.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>111
+222
+123456</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Sai mật khẩu.
+Sai mật khẩu.
+Đăng nhập thành công.</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># while_bt04_mat_khau.py
+correct_password = &quot;123456&quot;
+attempt = 0
+
+while attempt &lt; 3:
+    password = input(&quot;Nhập mật khẩu: &quot;)
+    attempt += 1
+
+    if password == correct_password:
+        print(&quot;Đăng nhập thành công.&quot;)
+        break
+    else:
+        print(&quot;Sai mật khẩu.&quot;)
+else:
+    print(&quot;Đã hết số lần thử.&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 5. Menu lặp</h4>
+      <p><b>Tên file:</b> <span class="file">while_bt05_menu.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Hiển thị menu 1. Xin chào; 2. In Python; 0. Thoát. Menu lặp cho đến khi chọn 0.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Dùng while True.</li><li>Mỗi vòng in menu.</li><li>Nhập choice dạng chuỗi.</li><li>Dùng if/elif để xử lý.</li><li>Khi choice == &#x27;0&#x27; thì break.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>1
+2
+0</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Xin chào bạn!
+Python
+Kết thúc.</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># while_bt05_menu.py
+while True:
+    print(&quot;\n1. Xin chào&quot;)
+    print(&quot;2. In Python&quot;)
+    print(&quot;0. Thoát&quot;)
+
+    choice = input(&quot;Chọn: &quot;)
+
+    if choice == &quot;1&quot;:
+        print(&quot;Xin chào bạn!&quot;)
+    elif choice == &quot;2&quot;:
+        print(&quot;Python&quot;)
+    elif choice == &quot;0&quot;:
+        print(&quot;Kết thúc.&quot;)
+        break
+    else:
+        print(&quot;Lựa chọn không hợp lệ.&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    </section><section id="s4">
+<h2>4. LẶP QUA CHUỖI VÀ CẤU TRÚC DỮ LIỆU</h2>
+<div class="theory">
+<p><code>for</code> không chỉ lặp qua số. Nó có thể lấy từng phần tử trong chuỗi, list, tuple, dict, set.</p>
+<table>
+<tr><th>Dữ liệu</th><th>Mỗi vòng lấy ra</th><th>Cú pháp thường dùng</th></tr>
+<tr><td>str</td><td>1 ký tự</td><td><code>for ch in text</code></td></tr>
+<tr><td>list/tuple</td><td>1 phần tử</td><td><code>for item in data</code></td></tr>
+<tr><td>dict</td><td>key hoặc key/value</td><td><code>for k,v in d.items()</code></td></tr>
+<tr><td>set</td><td>1 phần tử</td><td><code>for item in s</code></td></tr>
+</table>
+</div>
+
+    <div class="demo">
+      <h4>Demo 4 – Phân tích danh sách điểm</h4>
+      <p><b>Tên file:</b> <span class="file">demo_lap_danh_sach.py</span></p>
+      <p><b>Mục đích demo:</b> Minh họa duyệt list, cộng dồn, đếm và tìm giá trị lớn nhất.</p>
+      <h5>Code hoàn chỉnh có chú thích</h5>
+      <pre><code># demo_lap_danh_sach.py
+
+scores = [7.5, 8.0, 4.5, 6.5, 9.0]
+
+total = 0
+passed_count = 0
+max_score = scores[0]
+
+for score in scores:
+    total += score
+
+    if score &gt;= 5:
+        passed_count += 1
+
+    if score &gt; max_score:
+        max_score = score
+
+average = total / len(scores)
+
+print(f&quot;Điểm trung bình: {average:.2f}&quot;)
+print(&quot;Số điểm đạt:&quot;, passed_count)
+print(&quot;Điểm cao nhất:&quot;, max_score)</code></pre>
+      <h5>Giải thích từng phần</h5>
+      <table><tr><th>Dòng/ý chính</th><th>Giải thích</th></tr><tr><td><code>for score in scores</code></td><td>Mỗi vòng lấy ra một điểm.</td></tr><tr><td><code>total += score</code></td><td>Cộng dồn để tính trung bình.</td></tr><tr><td><code>passed_count += 1</code></td><td>Đếm số phần tử thỏa điều kiện.</td></tr><tr><td><code>max_score = scores[0]</code></td><td>Khởi tạo điểm lớn nhất bằng phần tử đầu tiên.</td></tr><tr><td><code>len(scores)</code></td><td>Số lượng phần tử trong list.</td></tr></table>
+      <div class="io-grid">
+        <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+        <div><b>Kết quả chạy mẫu</b><pre>Điểm trung bình: 7.10
+Số điểm đạt: 4
+Điểm cao nhất: 9.0</pre></div>
+      </div>
+    </div>
+    <h3>Bài tập thực hành có hướng dẫn</h3>
+    <div class="exercise">
+      <h4>Bài 1. Đếm ký tự &#x27;a&#x27; trong chuỗi</h4>
+      <p><b>Tên file:</b> <span class="file">data_bt01_dem_a.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Nhập một chuỗi và đếm số lần ký tự a xuất hiện.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Tạo count = 0.</li><li>Lặp từng ký tự trong chuỗi.</li><li>Nếu ký tự bằng &#x27;a&#x27; thì tăng count.</li><li>Có thể dùng lower() nếu muốn không phân biệt hoa thường.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>banana</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Số ký tự a: 3</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># data_bt01_dem_a.py
+text = input(&quot;Nhập chuỗi: &quot;)
+count = 0
+
+for char in text.lower():
+    if char == &quot;a&quot;:
+        count += 1
+
+print(&quot;Số ký tự a:&quot;, count)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 2. Tính trung bình list điểm</h4>
+      <p><b>Tên file:</b> <span class="file">data_bt02_trung_binh.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Cho list điểm có sẵn, tính trung bình mà không dùng sum().</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Tạo total = 0.</li><li>Duyệt từng score.</li><li>Cộng vào total.</li><li>Sau vòng lặp chia cho len(scores).</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Trung bình: 7.5</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># data_bt02_trung_binh.py
+scores = [7, 8, 6, 9]
+total = 0
+
+for score in scores:
+    total += score
+
+average = total / len(scores)
+print(&quot;Trung bình:&quot;, average)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 3. In key và value của dict</h4>
+      <p><b>Tên file:</b> <span class="file">data_bt03_dict.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Cho dict sinh viên và in từng cặp key: value.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Dùng .items() để lấy cả key và value.</li><li>Dùng 2 biến trong for.</li><li>Dùng f-string để in đẹp.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>name: An
+age: 18
+class: CNTT K28</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># data_bt03_dict.py
+student = {
+    &quot;name&quot;: &quot;An&quot;,
+    &quot;age&quot;: 18,
+    &quot;class&quot;: &quot;CNTT K28&quot;
+}
+
+for key, value in student.items():
+    print(f&quot;{key}: {value}&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 4. Tìm điểm cao nhất không dùng max()</h4>
+      <p><b>Tên file:</b> <span class="file">data_bt04_max.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Cho list điểm, tìm giá trị lớn nhất bằng vòng lặp.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Gán max_score = phần tử đầu tiên.</li><li>Duyệt từng điểm.</li><li>Nếu điểm hiện tại &gt; max_score thì cập nhật.</li><li>Sau vòng lặp in max_score.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Điểm cao nhất: 9.1</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># data_bt04_max.py
+scores = [6.5, 8.0, 7.2, 9.1, 5.5]
+max_score = scores[0]
+
+for score in scores:
+    if score &gt; max_score:
+        max_score = score
+
+print(&quot;Điểm cao nhất:&quot;, max_score)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    </section><section id="s5">
+<h2>5. BREAK / CONTINUE / ELSE TRONG VÒNG LẶP</h2>
+<div class="theory">
+<h3>break</h3><p>Dừng hẳn vòng lặp ngay khi đạt mục tiêu.</p>
+<h3>continue</h3><p>Bỏ qua phần còn lại của lần lặp hiện tại và chuyển sang lần kế tiếp.</p>
+<h3>else của vòng lặp</h3><p>Chạy khi vòng lặp kết thúc bình thường, không bị break.</p>
+<table>
+<tr><th>Từ khóa</th><th>Khi nên dùng</th></tr>
+<tr><td>break</td><td>Tìm thấy rồi, không cần tìm tiếp</td></tr>
+<tr><td>continue</td><td>Bỏ qua dữ liệu không muốn xử lý</td></tr>
+<tr><td>else</td><td>Xử lý trường hợp duyệt hết mà không tìm thấy</td></tr>
+</table>
+</div>
+
+    <div class="demo">
+      <h4>Demo 5 – Tìm phần tử trong danh sách</h4>
+      <p><b>Tên file:</b> <span class="file">demo_break_else.py</span></p>
+      <p><b>Mục đích demo:</b> Minh họa for + break + else.</p>
+      <h5>Code hoàn chỉnh có chú thích</h5>
+      <pre><code># demo_break_else.py
+
+numbers = [10, 20, 30, 40, 50]
+target = int(input(&quot;Nhập số cần tìm: &quot;))
+
+for number in numbers:
+    if number == target:
+        print(&quot;Đã tìm thấy.&quot;)
+        break
+else:
+    print(&quot;Không tìm thấy.&quot;)</code></pre>
+      <h5>Giải thích từng phần</h5>
+      <table><tr><th>Dòng/ý chính</th><th>Giải thích</th></tr><tr><td><code>for number in numbers</code></td><td>Duyệt từng phần tử.</td></tr><tr><td><code>if number == target</code></td><td>Kiểm tra có đúng giá trị cần tìm không.</td></tr><tr><td><code>break</code></td><td>Dừng ngay khi đã tìm thấy.</td></tr><tr><td><code>else của for</code></td><td>Chạy nếu vòng lặp không bị break.</td></tr></table>
+      <div class="io-grid">
+        <div><b>Dữ liệu nhập mẫu</b><pre>30</pre></div>
+        <div><b>Kết quả chạy mẫu</b><pre>Đã tìm thấy.</pre></div>
+      </div>
+    </div>
+    <h3>Bài tập thực hành có hướng dẫn</h3>
+    <div class="exercise">
+      <h4>Bài 1. Bỏ qua số chia hết cho 3</h4>
+      <p><b>Tên file:</b> <span class="file">bce_bt01_continue.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>In các số 1–20 nhưng bỏ qua số chia hết cho 3.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Lặp i từ 1 đến 20.</li><li>Nếu i % 3 == 0 thì continue.</li><li>Nếu không bị continue thì print i.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>1
+2
+4
+5
+7
+...</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># bce_bt01_continue.py
+for i in range(1, 21):
+    if i % 3 == 0:
+        continue
+    print(i)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 2. Tìm tên trong list</h4>
+      <p><b>Tên file:</b> <span class="file">bce_bt02_tim_ten.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Nhập tên cần tìm trong danh sách. Nếu tìm thấy thì dừng; nếu duyệt hết thì báo không thấy.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Chuẩn bị list tên.</li><li>Nhập target.</li><li>Duyệt từng name.</li><li>Nếu bằng target thì print và break.</li><li>Dùng else của for cho trường hợp không thấy.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>Lan</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Đã tìm thấy</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># bce_bt02_tim_ten.py
+names = [&quot;An&quot;, &quot;Bình&quot;, &quot;Lan&quot;, &quot;Minh&quot;]
+target = input(&quot;Nhập tên cần tìm: &quot;)
+
+for name in names:
+    if name == target:
+        print(&quot;Đã tìm thấy&quot;)
+        break
+else:
+    print(&quot;Không tìm thấy&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 3. Nhập tối đa 3 lần</h4>
+      <p><b>Tên file:</b> <span class="file">bce_bt03_3_lan.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Cho phép nhập mật khẩu tối đa 3 lần, đúng thì dừng ngay.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Dùng for range(1,4).</li><li>Mỗi vòng nhập password.</li><li>Nếu đúng thì break.</li><li>Dùng else của for để báo hết 3 lần.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>111
+222
+333</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Bạn đã nhập sai 3 lần.</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># bce_bt03_3_lan.py
+correct_password = &quot;123456&quot;
+
+for attempt in range(1, 4):
+    password = input(f&quot;Lần {attempt}: &quot;)
+
+    if password == correct_password:
+        print(&quot;Đăng nhập thành công.&quot;)
+        break
+else:
+    print(&quot;Bạn đã nhập sai 3 lần.&quot;)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    </section><section id="s6">
+<h2>6. COMPREHENSION – VIẾT MÃ NGẮN GỌN</h2>
+<div class="theory">
+<h3>6.1. List comprehension</h3>
+<p>Dùng khi muốn tạo list mới bằng một phép biến đổi/lọc đơn giản.</p>
+<pre><code>squares = [i ** 2 for i in range(1, 6)]
+even_numbers = [i for i in range(1, 11) if i % 2 == 0]</code></pre>
+<h3>6.2. Dict comprehension</h3>
+<pre><code>square_dict = {i: i ** 2 for i in range(1, 6)}</code></pre>
+<h3>6.3. Set comprehension</h3>
+<pre><code>unique_squares = {n ** 2 for n in [1, 2, 2, 3]}</code></pre>
+<div class="warn"><b>Không nên lạm dụng:</b> nếu biểu thức dài, nhiều if hoặc khó đọc, hãy quay lại vòng for thông thường.</div>
+</div>
+
+    <div class="demo">
+      <h4>Demo 6 – Lọc điểm đạt bằng list comprehension</h4>
+      <p><b>Tên file:</b> <span class="file">demo_list_comprehension.py</span></p>
+      <p><b>Mục đích demo:</b> Chuyển từ cách for thông thường sang comprehension.</p>
+      <h5>Code hoàn chỉnh có chú thích</h5>
+      <pre><code># demo_list_comprehension.py
+
+scores = [4, 5, 7, 8, 3, 9]
+
+# Với mỗi score trong scores:
+# chỉ giữ lại score nếu score &gt;= 5
+passed_scores = [score for score in scores if score &gt;= 5]
+
+print(&quot;Điểm ban đầu:&quot;, scores)
+print(&quot;Điểm đạt:&quot;, passed_scores)</code></pre>
+      <h5>Giải thích từng phần</h5>
+      <table><tr><th>Dòng/ý chính</th><th>Giải thích</th></tr><tr><td><code>score for score in scores</code></td><td>Lấy từng score từ list gốc.</td></tr><tr><td><code>if score &gt;= 5</code></td><td>Chỉ giữ phần tử thỏa điều kiện.</td></tr><tr><td><code>[ ... ]</code></td><td>Kết quả là một list mới.</td></tr></table>
+      <div class="io-grid">
+        <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+        <div><b>Kết quả chạy mẫu</b><pre>Điểm ban đầu: [4, 5, 7, 8, 3, 9]
+Điểm đạt: [5, 7, 8, 9]</pre></div>
+      </div>
+    </div>
+    <h3>Bài tập thực hành có hướng dẫn</h3>
+    <div class="exercise">
+      <h4>Bài 1. Bình phương 1–10</h4>
+      <p><b>Tên file:</b> <span class="file">comp_bt01_square.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Tạo list chứa bình phương từ 1 đến 10 bằng list comprehension.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Viết phiên bản for thường trên giấy.</li><li>Xác định biểu thức cần tạo là i ** 2.</li><li>Xác định dữ liệu nguồn là range(1,11).</li><li>Ghép thành [expression for item in data].</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>[1, 4, 9, ..., 100]</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># comp_bt01_square.py
+squares = [i ** 2 for i in range(1, 11)]
+print(squares)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 2. Lọc số chẵn</h4>
+      <p><b>Tên file:</b> <span class="file">comp_bt02_even.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Từ 1–20 tạo list chỉ có số chẵn.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Biểu thức giữ nguyên i.</li><li>Nguồn dữ liệu range(1,21).</li><li>Điều kiện lọc: i % 2 == 0.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>[2, 4, 6, ..., 20]</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># comp_bt02_even.py
+even_numbers = [i for i in range(1, 21) if i % 2 == 0]
+print(even_numbers)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 3. Dict tên → độ dài</h4>
+      <p><b>Tên file:</b> <span class="file">comp_bt03_dict_len.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Cho list tên, tạo dict có key là tên và value là độ dài tên.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Nguồn là list names.</li><li>Key dùng chính name.</li><li>Value dùng len(name).</li><li>Dùng cú pháp {key: value for item in data}.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>{&#x27;An&#x27;: 2, &#x27;Binh&#x27;: 4, &#x27;Lan&#x27;: 3}</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># comp_bt03_dict_len.py
+names = [&quot;An&quot;, &quot;Binh&quot;, &quot;Lan&quot;]
+lengths = {name: len(name) for name in names}
+print(lengths)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 4. Set loại trùng</h4>
+      <p><b>Tên file:</b> <span class="file">comp_bt04_set.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Từ list [1,1,2,2,3,3,4] tạo set không trùng bằng set comprehension.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Set tự loại trùng.</li><li>Biểu thức giữ nguyên n.</li><li>Duyệt từng n trong numbers.</li><li>Dùng dấu {} nhưng không có dấu &#x27;:&#x27; vì đây là set, không phải dict.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>{1, 2, 3, 4}</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># comp_bt04_set.py
+numbers = [1, 1, 2, 2, 3, 3, 4]
+unique_numbers = {n for n in numbers}
+print(unique_numbers)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    </section><section id="s7">
+<h2>7. GENERATOR EXPRESSION CƠ BẢN</h2>
+<div class="theory">
+<p>Generator expression giống list comprehension nhưng dùng <code>()</code>. Nó sinh từng giá trị khi cần thay vì giữ toàn bộ dữ liệu trong bộ nhớ.</p>
+<pre><code>squares = (i ** 2 for i in range(1, 6))
+
+for value in squares:
+    print(value)</code></pre>
+<h3>Khi nào nên dùng?</h3>
+<ul><li>Dữ liệu lớn.</li><li>Chỉ cần duyệt một lần.</li><li>Truyền trực tiếp vào hàm như sum(), max().</li></ul>
+<h3>Khi nào chưa cần dùng?</h3>
+<p>Với bài nhỏ cho người mới học, list dễ quan sát và dễ debug hơn.</p>
+</div>
+
+    <div class="demo">
+      <h4>Demo 7 – Tính tổng bình phương bằng generator</h4>
+      <p><b>Tên file:</b> <span class="file">demo_generator_sum.py</span></p>
+      <p><b>Mục đích demo:</b> Minh họa generator dùng trực tiếp với sum().</p>
+      <h5>Code hoàn chỉnh có chú thích</h5>
+      <pre><code># demo_generator_sum.py
+
+# Không tạo list bình phương đầy đủ
+squares = (i ** 2 for i in range(1, 6))
+
+# sum() lấy từng giá trị từ generator để cộng
+total = sum(squares)
+
+print(&quot;Tổng bình phương =&quot;, total)</code></pre>
+      <h5>Giải thích từng phần</h5>
+      <table><tr><th>Dòng/ý chính</th><th>Giải thích</th></tr><tr><td><code>(i ** 2 for i in range(1, 6))</code></td><td>Dùng ngoặc tròn nên đây là generator expression.</td></tr><tr><td><code>sum(squares)</code></td><td>sum() tiêu thụ từng giá trị được sinh ra.</td></tr><tr><td><code>squares</code></td><td>Sau khi đã được sum() dùng hết, generator này không còn dữ liệu để lặp lại.</td></tr></table>
+      <div class="io-grid">
+        <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+        <div><b>Kết quả chạy mẫu</b><pre>Tổng bình phương = 55</pre></div>
+      </div>
+    </div>
+    <h3>Bài tập thực hành có hướng dẫn</h3>
+    <div class="exercise">
+      <h4>Bài 1. Generator số chẵn 1–20</h4>
+      <p><b>Tên file:</b> <span class="file">gen_bt01_even.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Tạo generator sinh số chẵn từ 1 đến 20 và dùng for để in.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Viết biểu thức tương tự list comprehension.</li><li>Đổi [] thành ().</li><li>Thêm điều kiện i % 2 == 0.</li><li>Dùng for để lấy từng giá trị.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>2
+4
+6
+...
+20</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># gen_bt01_even.py
+even_numbers = (i for i in range(1, 21) if i % 2 == 0)
+
+for number in even_numbers:
+    print(number)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Bài 2. Tổng bình phương 1–100</h4>
+      <p><b>Tên file:</b> <span class="file">gen_bt02_sum_square.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Dùng generator expression trực tiếp trong sum().</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Biểu thức cần cộng là i ** 2.</li><li>Nguồn là range(1,101).</li><li>Đặt generator trực tiếp bên trong sum().</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>338350</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># gen_bt02_sum_square.py
+total = sum(i ** 2 for i in range(1, 101))
+print(total)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    </section><section id="s8">
+<h2>8. BÀI THỰC HÀNH TỔNG HỢP</h2>
+<div class="note"><b>Cách làm:</b> trước mỗi bài, hãy viết ra giấy: dữ liệu đầu vào, điều kiện, vòng lặp cần dùng, biến tích lũy/đếm, và điều kiện dừng.</div>
+
+    <div class="exercise">
+      <h4>Tổng hợp 1. Quản lý điểm</h4>
+      <p><b>Tên file:</b> <span class="file">tonghop_01_quan_ly_diem.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Cho list điểm. Tính trung bình, đếm số điểm đạt, tìm điểm cao nhất và tạo list điểm đạt.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Xác định cần duyệt list nên dùng for.</li><li>Cần total để cộng dồn.</li><li>Cần passed_count để đếm.</li><li>Cần max_score để theo dõi lớn nhất.</li><li>Sau vòng lặp tính average.</li><li>Dùng list comprehension để tạo passed_scores.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>(không nhập)</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Điểm trung bình: 6.42
+Số điểm đạt: 4
+Điểm cao nhất: 9.0
+Điểm đạt: [7.5, 8.0, 6.5, 9.0]</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># tonghop_01_quan_ly_diem.py
+scores = [7.5, 4.0, 8.0, 6.5, 3.5, 9.0]
+
+total = 0
+passed_count = 0
+max_score = scores[0]
+
+for score in scores:
+    total += score
+
+    if score &gt;= 5:
+        passed_count += 1
+
+    if score &gt; max_score:
+        max_score = score
+
+average = total / len(scores)
+passed_scores = [score for score in scores if score &gt;= 5]
+
+print(f&quot;Điểm trung bình: {average:.2f}&quot;)
+print(&quot;Số điểm đạt:&quot;, passed_count)
+print(&quot;Điểm cao nhất:&quot;, max_score)
+print(&quot;Điểm đạt:&quot;, passed_scores)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    
+    <div class="exercise">
+      <h4>Tổng hợp 2. Menu máy tính</h4>
+      <p><b>Tên file:</b> <span class="file">tonghop_02_menu.py</span></p>
+      <div class="requirement"><b>Yêu cầu bài tập:</b><br>Tạo menu cộng, trừ, nhân, chia; lặp cho đến khi chọn 0.</div>
+
+      <div class="guide">
+        <h5>Hướng dẫn cách giải – chưa phải đáp án</h5>
+        <ol><li>Menu cần lặp không biết trước số lần nên dùng while True.</li><li>Nhập choice.</li><li>Nếu choice == &#x27;0&#x27; thì break.</li><li>Nếu choice ngoài danh sách thì continue.</li><li>Nếu hợp lệ mới nhập a, b.</li><li>Dùng if/elif xử lý phép toán.</li><li>Riêng phép chia kiểm tra b != 0.</li></ol>
+      </div>
+
+      <div class="demoio">
+        <h5>Chạy thử theo mẫu</h5>
+        <div class="io-grid">
+          <div><b>Dữ liệu nhập mẫu</b><pre>1
+10
+5
+0</pre></div>
+          <div><b>Kết quả mong đợi</b><pre>Kết quả: 15.0
+Kết thúc chương trình.</pre></div>
+        </div>
+      </div>
+      
+      <button class="btn" onclick="toggleAnswer(this)">Xem lời giải tham khảo</button>
+      <div class="answer">
+        <pre><code># tonghop_02_menu.py
+while True:
+    print(&quot;\n1. Cộng&quot;)
+    print(&quot;2. Trừ&quot;)
+    print(&quot;3. Nhân&quot;)
+    print(&quot;4. Chia&quot;)
+    print(&quot;0. Thoát&quot;)
+
+    choice = input(&quot;Chọn: &quot;)
+
+    if choice == &quot;0&quot;:
+        print(&quot;Kết thúc chương trình.&quot;)
+        break
+
+    if choice not in [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;]:
+        print(&quot;Lựa chọn không hợp lệ.&quot;)
+        continue
+
+    a = float(input(&quot;Nhập a: &quot;))
+    b = float(input(&quot;Nhập b: &quot;))
+
+    if choice == &quot;1&quot;:
+        print(&quot;Kết quả:&quot;, a + b)
+    elif choice == &quot;2&quot;:
+        print(&quot;Kết quả:&quot;, a - b)
+    elif choice == &quot;3&quot;:
+        print(&quot;Kết quả:&quot;, a * b)
+    elif choice == &quot;4&quot;:
+        if b == 0:
+            print(&quot;Không thể chia cho 0&quot;)
+        else:
+            print(&quot;Kết quả:&quot;, a / b)</code></pre>
+        <p class="small"><b>Cách học:</b> Chỉ mở phần này sau khi đã tự viết và chạy thử chương trình của bạn.</p>
+      </div>
+    </div>
+    </section>
+</main>
+</div>
+<script>
+function toggleAnswer(btn){
+ const a=btn.nextElementSibling;
+ const show=a.style.display!=="block";
+ a.style.display=show?"block":"none";
+ btn.textContent=show?"Ẩn lời giải tham khảo":"Xem lời giải tham khảo";
+}
+function showAll(){document.querySelectorAll(".answer").forEach(x=>x.style.display="block")}
+function hideAll(){document.querySelectorAll(".answer").forEach(x=>x.style.display="none")}
+</script>
+</body></html>
